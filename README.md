@@ -3,6 +3,12 @@ In Swing I often used [swing-bits](https://github.com/eugener/oxbow) and now in 
 This library tries to fill the gap.
 Currently it supports String-based filtering only as that is all I needed yet.
 
+ Open Filter            | Filter result
+:-------------------------:|:-------------------------:
+![](http://i.imgur.com/aqLVLJD.png)  |  ![](http://i.imgur.com/BZ6SPbQ.png)
+
+
+
 ## How does this work?
 Call `FilterSupport.addFilter(tableColumn)` for each `TableColumn` which you want to have a filter.
 
