@@ -5,7 +5,7 @@ Currently it supports String-based filtering only as that is all I needed yet.
 
  Open Filter            | Filter result
 :-------------------------:|:-------------------------:
-![](http://i.imgur.com/doYu1Qc.png)  |  ![](http://i.imgur.com/guxJuLB.png)
+![](http://i.imgur.com/w0AeGDv.png)  |  ![](http://i.imgur.com/6ozBmAf.png)
 
 
 
