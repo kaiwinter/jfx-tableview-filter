@@ -8,11 +8,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.Popup;
 
 /**
  * Handles click events on the filter button of a {@link TableColumn}. On the first click event a filter dialog is instantiated and shown.
@@ -29,7 +27,7 @@ public final class FilterEventHandler<S> implements EventHandler<ActionEvent> {
 	private final TableColumn<S, String> tableColumn;
 	private final Button filterButton;
 
-	private Stage filterStage;
+	private Popup filterPopup;
 	private FilterController<S, String> filterController;
 
 	public FilterEventHandler(TableColumn<S, String> tableColumn, Button filterButton) {
@@ -39,19 +37,18 @@ public final class FilterEventHandler<S> implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent event) {
-		if (filterStage == null) {
-			filterStage = createNewDialog();
+		if (filterPopup == null) {
+			filterPopup = createNewDialog();
 		}
 
 		Bounds bounds = filterButton.localToScreen(filterButton.getParent().getBoundsInParent());
-		filterStage.setX(bounds.getMinX());
-		filterStage.setY(bounds.getMaxY());
+		filterPopup.setX(bounds.getMinX());
+		filterPopup.setY(bounds.getMaxY());
+		filterPopup.show(tableColumn.getTableView().getScene().getWindow());
 		filterController.show();
 	}
 
-	private Stage createNewDialog() {
-		Stage dialog = new Stage(StageStyle.UNDECORATED);
-		dialog.initOwner(tableColumn.getTableView().getScene().getWindow());
+	private Popup createNewDialog() {
 
 		try {
 			// TODO KW: Do this on initialization time to show a potential missing resource early? This is a performance
@@ -66,20 +63,19 @@ public final class FilterEventHandler<S> implements EventHandler<ActionEvent> {
 			filterController = fxmlLoader.getController();
 			filterController.setHandler(this);
 			filterController.setColumn(tableColumn);
-			filterController.setButton(filterButton);
 
 			// Add listener to inform FilterController if Table View data changed
 			tableColumn.getTableView().itemsProperty().addListener((observable, oldValue, newValue) -> {
 				filterController.tableDataChanged();
 			});
 
-			Scene scene = new Scene(filterDialogNode);
-			dialog.setScene(scene);
+			Popup popup = new Popup();
+			popup.getScene().setRoot(filterDialogNode);
+			popup.setAutoHide(true);
+			return popup;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
-		return dialog;
 	}
 
 	/**
@@ -96,5 +92,9 @@ public final class FilterEventHandler<S> implements EventHandler<ActionEvent> {
 		} else if (!filterActive && filterButton.getStyleClass().contains("active")) {
 			filterButton.getStyleClass().remove("active");
 		}
+	}
+
+	public void hidePopup() {
+		filterPopup.hide();
 	}
 }

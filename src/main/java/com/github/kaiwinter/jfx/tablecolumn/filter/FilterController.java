@@ -10,18 +10,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 
 /**
@@ -46,17 +41,6 @@ public final class FilterController<S, T> {
 	private ObservableList<S> items;
 	private FilteredList<S> filteredList;
 	private SortedList<S> sortedList;
-
-	private Button filterButton;
-
-	private final ChangeListener<Number> windowMovedListener = (observable, oldValue, newValue) -> hide();
-	private final EventHandler<MouseEvent> windowClickedHandler = event -> {
-		if (event.getTarget() == filterButton) {
-			// Consume event, else the filter dialog would be show up immediately after it was closed
-			event.consume();
-		}
-		hide();
-	};
 
 	@FXML
 	private void initialize() {
@@ -158,17 +142,9 @@ public final class FilterController<S, T> {
 	 * Shows the filter dialog.
 	 */
 	public void show() {
-		Stage stage = (Stage) filterTf.getScene().getWindow();
 		setFilteredItemsInFilterListView();
 		filterTf.requestFocus();
 		filterLv.getSelectionModel().clearSelection();
-		stage.show();
-
-		// The filter dialog should be hidden when the window is clicked else where or it gets moved
-		Window window = tableColumn.getTableView().getScene().getWindow();
-		window.addEventFilter(MouseEvent.MOUSE_RELEASED, windowClickedHandler);
-		window.xProperty().addListener(windowMovedListener);
-		window.yProperty().addListener(windowMovedListener);
 	}
 
 	/**
@@ -176,14 +152,7 @@ public final class FilterController<S, T> {
 	 */
 	@FXML
 	public void hide() {
-		Stage stage = (Stage) filterTf.getScene().getWindow();
-		stage.hide();
-
-		// Remove listeners which receives window click or move events
-		Window window = tableColumn.getTableView().getScene().getWindow();
-		window.removeEventFilter(MouseEvent.MOUSE_RELEASED, windowClickedHandler);
-		window.xProperty().removeListener(windowMovedListener);
-		window.yProperty().removeListener(windowMovedListener);
+		eventHandler.hidePopup();
 	}
 
 	/**
@@ -262,7 +231,4 @@ public final class FilterController<S, T> {
 		this.eventHandler = eventHandler;
 	}
 
-	public void setButton(Button filterButton) {
-		this.filterButton = filterButton;
-	}
 }
