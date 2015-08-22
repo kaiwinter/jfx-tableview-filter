@@ -22,7 +22,7 @@ You don't have to do anything for this as the library handles this wrapping when
 The `TableView` doesn't contain a 'plain' `ObservableList` anymore.
 When you call `TableView.getItems()` you get the `SortedList` instead of the `ObservableList`.  
 `SortedList` doesn't support all methods as `ObservableList` so you will get an `UnsupportedOperationException` for example when you call `clear()`.
-To fix this there is the helper method `FilterSupport.clearItems(tableView)` which unwraps the original `ObservableList` and calls `clear()` on that.
+To fix this there is the helper method `FilterSupport.getItems(tableView)` which returns the original `ObservableList`.
 ### That's bad
 Yes it is.
 In the future this library might be extended by a `FilterableTableView` which ~~overwrites `getItems()`~~ nope it's `final`.

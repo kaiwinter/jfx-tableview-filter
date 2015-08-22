@@ -34,27 +34,27 @@ public final class FilterSupport {
 	}
 
 	/**
-	 * Clear the items of the passed {@link TableView}. If a filter was added to a {@link TableColumn} by {@link #addFilter(TableColumn)}
-	 * the item list gets wrapped in a {@link FilteredList} and a {@link SortedList}. This makes direct calls of clear() on the table's
-	 * items fail. This method un-wraps the list and calls clear on the internal list. If the {@link TableView} doesn't contains a wrapped
-	 * list clear() is called on the outer list.
+	 * Returns the items of the passed {@link TableView}. If a filter was added to a {@link TableColumn} by {@link #addFilter(TableColumn)}
+	 * the item list is wrapped in a {@link FilteredList} and a {@link SortedList}. This makes direct calls on the list which is returned by
+	 * <code>getItems()</code> on the {@link TableView} fail. This method un-wraps the list and returns the underlying
+	 * {@link ObservableList}.
 	 *
 	 * @param tableView
 	 *            the {@link TableView} to clear
+	 * @return the underlying {@link ObservableList} of the given <code>tableView</code>
 	 */
-	public static void clearItems(TableView<?> tableView) {
-		ObservableList<?> items = tableView.getItems();
+	public static <S> ObservableList<? extends S> getItems(TableView<S> tableView) {
+		ObservableList<S> items = tableView.getItems();
 		if (items instanceof SortedList) {
-			if (((SortedList<?>) items).getSource() instanceof FilteredList) {
-				FilteredList<?> filteredList = (FilteredList<?>) ((SortedList<?>) items).getSource();
-				ObservableList<?> unwrappedList = filteredList.getSource();
-				unwrappedList.clear();
+			if (((SortedList<S>) items).getSource() instanceof FilteredList) {
+				FilteredList<? extends S> filteredList = (FilteredList<? extends S>) ((SortedList<? extends S>) items).getSource();
+				ObservableList<? extends S> unwrappedList = filteredList.getSource();
+				return unwrappedList;
 			} else {
 				LOGGER.warn("Tried to clear items of TableView which seems not to be managed by FilterSupport.");
 			}
-		} else {
-			items.clear();
 		}
+		return items;
 	}
 
 }
