@@ -23,9 +23,13 @@ public final class FilterSupport {
 	 * Adds the automatic column filter to the given {@link TableColumn}.
 	 *
 	 * @param column
-	 *            the {@link TableColumn} which will receive the filter
+	 *            the {@link TableColumn} which will receive the filter, not <code>null</code>
 	 */
 	public static <S> void addFilter(TableColumn<S, String> column) {
+		if (column == null) {
+			throw new IllegalArgumentException("TableColumn must not be null");
+		}
+
 		Button button = new Button();
 		button.setFocusTraversable(false);
 		button.getStylesheets().add(FILTER_BUTTON_CSS);
@@ -40,10 +44,14 @@ public final class FilterSupport {
 	 * {@link ObservableList}.
 	 *
 	 * @param tableView
-	 *            the {@link TableView} to clear
+	 *            the {@link TableView} to clear, not <code>null</code>
 	 * @return the underlying {@link ObservableList} of the given <code>tableView</code>
 	 */
 	public static <S> ObservableList<? extends S> getItems(TableView<S> tableView) {
+		if (tableView == null) {
+			throw new IllegalArgumentException("TableView must not be null");
+		}
+
 		ObservableList<S> items = tableView.getItems();
 		if (items instanceof SortedList) {
 			if (((SortedList<S>) items).getSource() instanceof FilteredList) {
