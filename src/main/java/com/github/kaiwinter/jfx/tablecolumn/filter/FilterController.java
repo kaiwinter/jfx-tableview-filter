@@ -4,6 +4,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.github.kaiwinter.jfx.tablecolumn.filter.predicate.InStringExpressionPredicate;
+import com.github.kaiwinter.jfx.tablecolumn.filter.predicate.InStringExpressionPredicate.InStringTableColumnExpressionPredicate;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -109,12 +112,7 @@ public final class FilterController<S, T> {
 			predicate = null;
 		} else {
 			filterActive = true;
-			predicate = value -> {
-				CellDataFeatures<S, String> cellData = new CellDataFeatures<>(null, null, value);
-
-				String stringValue = tableColumn.getCellValueFactory().call(cellData).getValue();
-				return stringValue.toLowerCase().contains(filterText.toLowerCase());
-			};
+			predicate = new InStringTableColumnExpressionPredicate<>(tableColumn, filterText);
 		}
 		eventHandler.setFilterActive(filterActive);
 
@@ -170,12 +168,7 @@ public final class FilterController<S, T> {
 
 		// Filter list view if text is entered
 		ChangeListener<String> listener = (ChangeListener<String>) (observable, oldValue, newValue) -> {
-			filteredUniqueValues.setPredicate(t -> {
-				if (newValue == null || newValue.isEmpty()) {
-					return true;
-				}
-				return t.toLowerCase().contains(newValue.toLowerCase());
-			});
+			filteredUniqueValues.setPredicate(new InStringExpressionPredicate(newValue));
 		};
 		filterTf.textProperty().addListener(listener);
 
