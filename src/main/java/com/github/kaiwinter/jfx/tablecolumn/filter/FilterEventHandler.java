@@ -28,7 +28,7 @@ public final class FilterEventHandler<S> implements EventHandler<ActionEvent> {
 	private final Button filterButton;
 
 	private Popup filterPopup;
-	private FilterController<S, String> filterController;
+	private FilterController<S> filterController;
 
 	public FilterEventHandler(TableColumn<S, String> tableColumn, Button filterButton) {
 		this.tableColumn = tableColumn;

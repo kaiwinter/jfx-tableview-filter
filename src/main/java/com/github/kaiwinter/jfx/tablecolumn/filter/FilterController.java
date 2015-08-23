@@ -27,9 +27,8 @@ import javafx.util.Callback;
  * underlying items.
  *
  * @param <S>
- * @param <T>
  */
-public final class FilterController<S, T> {
+public final class FilterController<S> {
 
 	@FXML
 	private TextField filterTf;
