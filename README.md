@@ -7,7 +7,20 @@ Currently it supports String-based filtering only as that is all I needed yet.
 :-------------------------:|:-------------------------:
 ![](http://i.imgur.com/w0AeGDv.png)  |  ![](http://i.imgur.com/6ozBmAf.png)
 
+## Maven
+jfx-tableview-filter is not on Maven Central. Find it on [JitPack.io](https://jitpack.io/#kaiwinter/jfx-tableview-filter/v1.1.0)
+```xml
+<repository>
+	 <id>jitpack.io</id>
+	 <url>https://jitpack.io</url>
+</repository>
 
+<dependency>
+	 <groupId>com.github.kaiwinter</groupId>
+	 <artifactId>jfx-tableview-filter</artifactId>
+	 <version>v1.1.0</version>
+</dependency>
+```
 
 ## How does this work?
 Call `FilterSupport.addFilter(tableColumn)` for each `TableColumn` which you want to have a filter.
