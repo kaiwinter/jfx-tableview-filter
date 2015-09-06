@@ -53,16 +53,33 @@ public final class FilterSupport {
 		}
 
 		ObservableList<S> items = tableView.getItems();
-		if (items instanceof SortedList) {
-			if (((SortedList<S>) items).getSource() instanceof FilteredList) {
-				FilteredList<? extends S> filteredList = (FilteredList<? extends S>) ((SortedList<? extends S>) items).getSource();
+		return getUnwrappedList(items);
+	}
+
+	/**
+	 * Returns the items of the passed {@link TableView}. If a filter was added to a {@link TableColumn} by {@link #addFilter(TableColumn)}
+	 * the item list is wrapped in a {@link FilteredList} and a {@link SortedList}. This makes direct calls on the list which is returned by
+	 * <code>getItems()</code> on the {@link TableView} fail. This method un-wraps the list and returns the underlying
+	 * {@link ObservableList}.
+	 *
+	 * @param wrappedList
+	 *            the item list of a {@link TableView}
+	 * @return the underlying {@link ObservableList} of the given wrapped list or the passed list if it is not wrapped
+	 */
+	public static <S> ObservableList<? extends S> getUnwrappedList(ObservableList<S> wrappedList) {
+		if (wrappedList instanceof SortedList) {
+			if (((SortedList<S>) wrappedList).getSource() instanceof FilteredList) {
+				FilteredList<? extends S> filteredList = (FilteredList<? extends S>) ((SortedList<? extends S>) wrappedList).getSource();
 				ObservableList<? extends S> unwrappedList = filteredList.getSource();
 				return unwrappedList;
 			} else {
-				LOGGER.warn("Tried to clear items of TableView which seems not to be managed by FilterSupport.");
+				LOGGER.warn("Cannot unwrap List: outer list is of type {} instead of FilteredList", wrappedList.getClass().getSimpleName());
 			}
+		} else {
+			LOGGER.warn("Cannot unwrap List: outer list is of type {} instead of SortedList", wrappedList.getClass().getSimpleName());
 		}
-		return items;
+
+		return wrappedList;
 	}
 
 }
